@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>27&nbsp; Kỹ thuật kiểm tra missing value NA – Thống kê sinh học: Từ lý thuyết đến ứng dụng</title>
+<title>22&nbsp; Chương 1. Giới thiệu – Thống kê sinh học: Từ lý thuyết đến ứng dụng</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -58,7 +58,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -68,8 +87,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
-<link href="./ky-thuat-reshape-du-lieu.html" rel="prev">
+<link href="./huong-dan-convert-tu-csv-qua-tsv-trong-r.html" rel="next">
+<link href="./xay-dung-mo-hinh-GAM-trong-r.html" rel="prev">
 <link href="./favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -109,35 +128,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -150,7 +140,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./huong-dan-convert-tu-csv-qua-tsv-trong-r.html">Kỹ thuật xử lý dữ liệu</a></li><li class="breadcrumb-item"><a href="./ky-thuat-kiem-tra-missing-value.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><b>Kỹ thuật kiểm tra missing value <code>NA</code></b></span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sheather2009_chapter1.html">Xây dựng mô hình hồi quy</a></li><li class="breadcrumb-item"><a href="./sheather2009_chapter1.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><b>Chương 1. Giới thiệu</b></span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -340,7 +330,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sheather2009_chapter1.html" class="sidebar-item-text sidebar-link">
+  <a href="./sheather2009_chapter1.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><b>Chương 1. Giới thiệu</b></span></span></a>
   </div>
 </li>
@@ -381,7 +371,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ky-thuat-kiem-tra-missing-value.html" class="sidebar-item-text sidebar-link active">
+  <a href="./ky-thuat-kiem-tra-missing-value.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><b>Kỹ thuật kiểm tra missing value <code>NA</code></b></span></span></a>
   </div>
 </li>
@@ -402,9 +392,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content column-page-right" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./huong-dan-convert-tu-csv-qua-tsv-trong-r.html">Kỹ thuật xử lý dữ liệu</a></li><li class="breadcrumb-item"><a href="./ky-thuat-kiem-tra-missing-value.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><b>Kỹ thuật kiểm tra missing value <code>NA</code></b></span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sheather2009_chapter1.html">Xây dựng mô hình hồi quy</a></li><li class="breadcrumb-item"><a href="./sheather2009_chapter1.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><b>Chương 1. Giới thiệu</b></span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><b>Kỹ thuật kiểm tra missing value <code>NA</code></b></span></h1>
+<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><b>Chương 1. Giới thiệu</b></span></h1>
 </div>
 
 
@@ -421,199 +411,293 @@ window.Quarto = {
 </header>
 
 
-<p><strong>Ta có 1 dataset gồm 30 dòng và 6 cột, trong đó có 1 số cột bị missing value. Để kiểm tra nhanh, ta sẽ dùng lệnh <code>summary()</code> tuy nhiên lệnh này không kiểm tra được các cột là <code>character</code>.</strong></p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 30  6</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                                   name school student revenue expenditure type
-1            RIO GRANDE CITY GRULLA ISD     15    9007   14409       12858 &lt;NA&gt;
-2                             KEENE ISD      5    1016   16272       11291 &lt;NA&gt;
-3                             BRYAN ISD     25   16005   14613          NA &lt;NA&gt;
-4                          GOODRICH ISD      3     244   18543       13730 &lt;NA&gt;
-5                       HALE CENTER ISD      3     597   15541          NA &lt;NA&gt;
-6                            LAMESA ISD      1    1602   18810          NA &lt;NA&gt;
-7      EVOLUTION ACADEMY CHARTER SCHOOL      3     669   12607          NA    I
-8                            MALONE ISD      1     153   17031          NA &lt;NA&gt;
-9                           RAMIREZ CSD      1      26   22447       17483 &lt;NA&gt;
-10     ST MARY'S ACADEMY CHARTER SCHOOL      1     401   13897       13384    I
-11                      BLOOMINGTON ISD      5     825   13999       13182 &lt;NA&gt;
-12                           LOMETA ISD      2     317   22798          NA &lt;NA&gt;
-13 DR M L GARZA-GONZALEZ CHARTER SCHOOL      1     166   14006          NA    I
-14                 HARDIN-JEFFERSON ISD      5    2602   11022          NA &lt;NA&gt;
-15                ROSCOE COLLEGIATE ISD      4    3076   29616          NA &lt;NA&gt;
-16                       WESTPHALIA ISD      1     155   14312          NA &lt;NA&gt;
-17                         HEMPHILL ISD      3     901   16550          NA &lt;NA&gt;
-18                            MOODY ISD      4     687   15586          NA &lt;NA&gt;
-19                          PEWITT CISD      3     866   13718          NA &lt;NA&gt;
-20                  CORRIGAN-CAMDEN ISD      3     817   17796       15432 &lt;NA&gt;
-21                   PATTON SPRINGS ISD      1      86   29806       25965 &lt;NA&gt;
-22                        WINNSBORO ISD      4    1532   21267       11859 &lt;NA&gt;
-23                      PAINT CREEK ISD      1      95   29940       22333 &lt;NA&gt;
-24                    LIBERTY-EYLAU ISD      4    2131   19971       12415 &lt;NA&gt;
-25                     GOOSE CREEK CISD     31   23833   14213       12111 &lt;NA&gt;
-26             TEXAS PREPARATORY SCHOOL      2     120   16009       16096    I
-27                    TULOSO-MIDWAY ISD      6    3745   15313       10669 &lt;NA&gt;
-28                   NUECES CANYON CISD      2     254   16804       15142 &lt;NA&gt;
-29                         MISSION CISD     23   13838   15204       12062 &lt;NA&gt;
-30                           UNITED ISD     50   39243   12654       11226 &lt;NA&gt;</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(df, class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       name      school     student     revenue expenditure        type 
-"character"   "numeric"   "numeric"   "numeric"   "numeric" "character" </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     name               school         student           revenue       expenditure        type          
- Length:30          Min.   : 1.00   Min.   :   26.0   Min.   :11022   Min.   :10669   Length:30         
- Class :character   1st Qu.: 1.25   1st Qu.:  246.5   1st Qu.:14238   1st Qu.:12062   Class :character  
- Mode  :character   Median : 3.00   Median :  821.0   Median :15798   Median :13182   Mode  :character  
-                    Mean   : 7.10   Mean   : 4167.0   Mean   :17492   Mean   :14543                     
-                    3rd Qu.: 5.00   3rd Qu.: 2484.2   3rd Qu.:18743   3rd Qu.:15432                     
-                    Max.   :50.00   Max.   :39243.0   Max.   :29940   Max.   :25965                     
-                                                                      NA's   :13                        </code></pre>
-</div>
-</div>
-<p><strong>Do vậy để kiểm tra nhanh toàn bộ dataset <code>df</code> này có bao nhiêu giá trị missing value ở tất cả các cột (gồm <code>character</code> và <code>numeric</code>) thì ta dùng function <code>md.pattern()</code> trong package <code>mice</code>.</strong></p>
+<p>Nội dung của tài liệu hướng dẫn này bám theo giáo trình <code>A modern approach to regression with R</code> <span class="citation" data-cites="sheather2009">(<a href="references.html#ref-sheather2009" role="doc-biblioref">Sheather 2009</a>)</span>. Trọng tâm của tài liệu này nói về việc những diễn giải chỉ có ý nghĩa khi dựa trên mô hình phù hợp.</p>
 <blockquote class="blockquote">
-<p>This function is useful for investigating any structure of missing observations in the data.</p>
+<p>A key theme throughout the book is that it makes sense to base inferences or conclusions only on valid models.</p>
 </blockquote>
+<p>Dataset <code>kicker</code> là thông tin của 19 cầu thủ bóng bầu dục với tỷ lệ ghi bàn qua từng mùa giải. Cột <code>FGtM1</code> là tỷ lệ ghi bàn ở mùa giải trước, còn cột <code>FGt</code> là tỷ lệ ghi bàn ở mùa giải sau.</p>
+<p>Khi vẽ đồ thị scatter plot ta thấy không có sự tương quan giữa tỷ lệ ghi bàn của các cầu thủ.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>mice<span class="sc">::</span><span class="fu">md.pattern</span>(df, <span class="at">plot =</span> <span class="cn">TRUE</span>, <span class="at">rotate.names =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>kicker <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"FieldGoals2003to2006.csv"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>kicker</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   Name Yeart Teamt FGAt   FGt Team.t.1. FGAtM1 FGtM1 FGAtM2 FGtM2
+1        Adam Vinatieri  2003    NE   34  73.5        NE     30  90.0     NA    NA
+2        Adam Vinatieri  2004    NE   33  93.9        NE     34  73.5     30  90.0
+3        Adam Vinatieri  2005    NE   25  80.0        NE     33  93.9     34  73.5
+4        Adam Vinatieri  2006   IND   19  89.4        NE     25  80.0     33  93.9
+5           David Akers  2003   PHI   29  82.7       PHI     34  88.2     NA    NA
+6           David Akers  2004   PHI   32  84.3       PHI     29  82.7     34  88.2
+7           David Akers  2005   PHI   22  72.7       PHI     32  84.3     29  82.7
+8           David Akers  2006   PHI   12  83.3       PHI     22  72.7     32  84.3
+9            Jason Elam  2003   DEN   31  87.0       DEN     36  72.2     NA    NA
+10           Jason Elam  2004   DEN   34  85.2       DEN     31  87.0     36  72.2
+11           Jason Elam  2005   DEN   32  75.0       DEN     34  85.2     31  87.0
+12           Jason Elam  2006   DEN   15  86.6       DEN     32  75.0     34  85.2
+13         Jason Hanson  2003   DET   23  95.6       DET     28  82.1     NA    NA
+14         Jason Hanson  2004   DET   28  85.7       DET     23  95.6     28  82.1
+15         Jason Hanson  2005   DET   24  79.1       DET     28  85.7     23  95.6
+16         Jason Hanson  2006   DET   17  82.3       DET     24  79.1     28  85.7
+17            Jay Feely  2003   ATL   27  70.3       ATL     40  80.0     NA    NA
+18            Jay Feely  2004   ATL   23  78.2       ATL     27  70.3     40  80.0
+19            Jay Feely  2005   NYG   42  83.3       ATL     23  78.2     27  70.3
+20            Jay Feely  2006   NYG   17  76.4       NYG     42  83.3     23  78.2
+21            Jeff Reed  2003   PIT   32  71.8       PIT     19  89.4     NA    NA
+22            Jeff Reed  2004   PIT   33  84.8       PIT     32  71.8     19  89.4
+23            Jeff Reed  2005   PIT   29  82.7       PIT     33  84.8     32  71.8
+24            Jeff Reed  2006   PIT   16  68.7       PIT     29  82.7     33  84.8
+25         Jeff Wilkins  2003   STL   42  92.8       STL     25  76.0     NA    NA
+26         Jeff Wilkins  2004   STL   24  79.1       STL     42  92.8     25  76.0
+27         Jeff Wilkins  2005   STL   31  87.0       STL     24  79.1     42  92.8
+28         Jeff Wilkins  2006   STL   26  88.4       STL     31  87.0     24  79.1
+29          John Carney  2003    NO   30  73.3        NO     35  88.5     NA    NA
+30          John Carney  2004    NO   27  81.4        NO     30  73.3     35  88.5
+31          John Carney  2005    NO   32  78.1        NO     27  81.4     30  73.3
+32          John Carney  2006    NO   17  88.2        NO     32  78.1     27  81.4
+33            John Hall  2003   WAS   33  75.7       NYJ     31  77.4     NA    NA
+34            John Hall  2004   WAS   11  72.7       WAS     33  75.7     31  77.4
+35            John Hall  2005   WAS   14  85.7       WAS     11  72.7     33  75.7
+36            John Hall  2006   WAS   11  81.8       WAS     14  85.7     11  72.7
+37           Kris Brown  2003   HOU   22  81.8       HOU     24  70.8     NA    NA
+38           Kris Brown  2004   HOU   24  70.8       HOU     22  81.8     24  70.8
+39           Kris Brown  2005   HOU   34  76.4       HOU     24  70.8     22  81.8
+40           Kris Brown  2006   HOU   15  73.3       HOU     34  76.4     24  70.8
+41          Matt Stover  2003   BAL   38  86.8       BAL     25  84.0     NA    NA
+42          Matt Stover  2004   BAL   32  90.6       BAL     38  86.8     25  84.0
+43          Matt Stover  2005   BAL   34  88.2       BAL     32  90.6     38  86.8
+44          Matt Stover  2006   BAL   16 100.0       BAL     34  88.2     32  90.6
+45      Mike Vanderjagt  2003   IND   37 100.0       IND     31  74.1     NA    NA
+46      Mike Vanderjagt  2004   IND   25  80.0       IND     37 100.0     31  74.1
+47      Mike Vanderjagt  2005   IND   25  92.0       IND     25  80.0     37 100.0
+48      Mike Vanderjagt  2006   DAL   15  80.0       IND     25  92.0     25  80.0
+49         Neil Rackers  2003   ARZ   12  75.0       CIN     18  83.3     NA    NA
+50         Neil Rackers  2004   ARZ   29  75.8       ARZ     12  75.0     18  83.3
+51         Neil Rackers  2005   ARZ   42  95.2       ARZ     29  75.8     12  75.0
+52         Neil Rackers  2006   ARZ   19  68.4       ARZ     42  95.2     29  75.8
+53          Olindo Mare  2003   MIA   29  75.8       MIA     31  77.4     NA    NA
+54          Olindo Mare  2004   MIA   16  75.0       MIA     29  75.8     31  77.4
+55          Olindo Mare  2005   MIA   30  83.3       MIA     16  75.0     29  75.8
+56          Olindo Mare  2006   MIA   22  63.6       MIA     30  83.3     16  75.0
+57          Phil Dawson  2003   CLE   21  85.7       CLE     28  78.5     NA    NA
+58          Phil Dawson  2004   CLE   29  82.7       CLE     21  85.7     28  78.5
+59          Phil Dawson  2005   CLE   29  93.1       CLE     29  82.7     21  85.7
+60          Phil Dawson  2006   CLE   17  88.2       CLE     29  93.1     29  82.7
+61         Rian Lindell  2003   BUF   24  70.8       SEA     29  79.3     NA    NA
+62         Rian Lindell  2004   BUF   28  85.7       BUF     24  70.8     29  79.3
+63         Rian Lindell  2005   BUF   35  82.8       BUF     28  85.7     24  70.8
+64         Rian Lindell  2006   BUF   16  87.5       BUF     35  82.8     28  85.7
+65        Ryan Longwell  2003    GB   26  88.4        GB     34  82.3     NA    NA
+66        Ryan Longwell  2004    GB   28  85.7        GB     26  88.4     34  82.3
+67        Ryan Longwell  2005    GB   27  74.0        GB     28  85.7     26  88.4
+68        Ryan Longwell  2006   MIN   18  83.3        GB     27  74.0     28  85.7
+69 Sebastian Janikowski  2003   OAK   25  88.0       OAK     33  78.7     NA    NA
+70 Sebastian Janikowski  2004   OAK   28  89.2       OAK     25  88.0     33  78.7
+71 Sebastian Janikowski  2005   OAK   30  66.6       OAK     28  89.2     25  88.0
+72 Sebastian Janikowski  2006   OAK   13  84.6       OAK     30  66.6     28  89.2
+73        Shayne Graham  2003   CIN   25  88.0       CAR     18  72.2     NA    NA
+74        Shayne Graham  2004   CIN   31  87.0       CIN     25  88.0     18  72.2
+75        Shayne Graham  2005   CIN   32  87.5       CIN     31  87.0     25  88.0
+76        Shayne Graham  2006   CIN   19  84.2       CIN     32  87.5     31  87.0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kicker<span class="sc">$</span>Name <span class="ot">&lt;-</span> <span class="fu">factor</span>(kicker<span class="sc">$</span>Name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Khi nhìn vào hệ số tương quan -0.139 ta thấy không có sự khác biệt có ý nghĩa thống kê so với 0 (tức là không tương quan) vì p-value là 0.2305 &gt; 0.05.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(<span class="at">x =</span> kicker<span class="sc">$</span>FGtM1,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> kicker<span class="sc">$</span>FGt,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"pearson"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's product-moment correlation
+
+data:  kicker$FGtM1 and kicker$FGt
+t = -1.2092, df = 74, p-value = 0.2305
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3535538  0.0890568
+sample estimates:
+       cor 
+-0.1391935 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">pty =</span> <span class="st">"s"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> kicker<span class="sc">$</span>FGtM1,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">y =</span> kicker<span class="sc">$</span>FGt,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Unadjusted Correlation = -0.139"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Field Goal Percentage in Year t-1"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Field Goal Percentage in Year t"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="ky-thuat-kiem-tra-missing-value_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="576"></p>
+<p><img src="sheather2009_chapter1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   name school student revenue expenditure type   
-2     1      1       1       1           1    1  0
-15    1      1       1       1           1    0  1
-2     1      1       1       1           0    1  1
-11    1      1       1       1           0    0  2
-      0      0       0       0          13   26 39</code></pre>
 </div>
-</div>
-<p><strong>Ở đây ta phân tích kỹ các con số từ đồ thị này để đánh giá tình hình missing value trong bộ dữ liệu. Cụ thể:</strong></p>
-<ul>
-<li><p>Giá trị nằm ngang dưới cùng (0, 0, 0, 0, 13, 26 và 39) lần lượt là <strong><em>số lượng</em></strong> missing value trong từng cột, còn số <strong>39</strong> nghĩa là trong toàn bộ dataset <code>df</code> (gồm 30 dòng và 6 cột, tạo thành tổng cộng 180 ô dữ liệu) có 39 ô bị giá trị trống. Được tính theo công thức: <span class="math inline">\(0 + 0 + 0 + 0 + 13 + 26 = 39\)</span>.</p></li>
-<li><p>Giá trị nằm bên trái (2, 15, 2, 11) tương ứng với các con số bên phải (0, 1, 1, 2) có ý nghĩa là:</p></li>
-</ul>
+<p>Tuy nhiên nhận định như vậy là không chính xác vì ta không xét riêng cho từng cầu thủ. Hay nói cách khác, nhận định này dựa trên mô hình không phù hợp.</p>
+<blockquote class="blockquote">
+<p>In other words this approach is based on an invalid model.</p>
+</blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">### số 2 là dataset chỉ còn 2 dòng (hàng) dữ liệu sau khi na.omit() toàn bộ các cột</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="do">### nghĩa là lúc này dataset không (số 0) còn cột nào có giá trị missing value</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df_clean_all_column <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(df_clean_all_column) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df_clean_all_column)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2 6</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>col_ok <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"red"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>             <span class="st">"blue"</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">"yellow"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>             <span class="st">"green"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>             <span class="st">"cyan"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>             <span class="st">"brown"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>             <span class="st">"gray"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>             <span class="st">"navy"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>             <span class="st">"coral"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>             <span class="st">"purple"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>             <span class="st">"darkgreen"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>             <span class="st">"black"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>             <span class="st">"lightblue"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>             <span class="st">"firebrick"</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>             <span class="st">"lightgreen"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>             <span class="st">"darksalmon"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>             <span class="st">"gold"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>             <span class="st">"bisque"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>             <span class="st">"azure"</span>)[kicker<span class="sc">$</span>Name]</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">pty =</span> <span class="st">"s"</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> kicker<span class="sc">$</span>FGtM1,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">y =</span> kicker<span class="sc">$</span>FGt,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Tương quan của tỷ lệ ghi bàn giữa hai năm liên tiếp"</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Tỷ lệ ghi bàn của năm trước"</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Tỷ lệ ghi bàn của năm sau"</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> col_ok,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sheather2009_chapter1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_clean_all_column</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                              name school student revenue expenditure type
-1 ST MARY'S ACADEMY CHARTER SCHOOL      1     401   13897       13384    I
-2         TEXAS PREPARATORY SCHOOL      2     120   16009       16096    I</code></pre>
 </div>
 </div>
+<p>Phân tích ANOVA cho các biến trong mô hình này ta thấy tương tác giữa <code>FGtM1:Name</code> không có ý nghĩa thống kê, trong khi đó <code>Name</code> có ý nghĩa thống kê tức là <code>allow a different intercept for each kicker, but to force the same slope across all kickers.</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">### số 15 là dataset có 15 dòng (hàng) dữ liệu đầy đủ tất cả thông tin (từ cột đầu tiên đến cột expenditure) </span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="do">### ngoại trừ cột type (màu đỏ), lúc này toàn bộ giá trị ở cột type là NA.</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>df_clean_1 <span class="ot">&lt;-</span> df[<span class="fu">complete.cases</span>(df<span class="sc">$</span>name, df<span class="sc">$</span>school, df<span class="sc">$</span>student, df<span class="sc">$</span>revenue, df<span class="sc">$</span>expenditure), ]</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>df_clean_1a <span class="ot">&lt;-</span> df_clean_1[<span class="fu">is.na</span>(df_clean_1<span class="sc">$</span>type), ] </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(df_clean_1a) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df_clean_1a) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">lm</span>(FGt <span class="sc">~</span> FGtM1 <span class="sc">+</span> Name <span class="sc">+</span> FGtM1<span class="sc">:</span>Name,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> kicker)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit<span class="fl">.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 15  6</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df_clean_1a</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                         name school student revenue expenditure type
-1  RIO GRANDE CITY GRULLA ISD     15    9007   14409       12858 &lt;NA&gt;
-2                   KEENE ISD      5    1016   16272       11291 &lt;NA&gt;
-3                GOODRICH ISD      3     244   18543       13730 &lt;NA&gt;
-4                 RAMIREZ CSD      1      26   22447       17483 &lt;NA&gt;
-5             BLOOMINGTON ISD      5     825   13999       13182 &lt;NA&gt;
-6         CORRIGAN-CAMDEN ISD      3     817   17796       15432 &lt;NA&gt;
-7          PATTON SPRINGS ISD      1      86   29806       25965 &lt;NA&gt;
-8               WINNSBORO ISD      4    1532   21267       11859 &lt;NA&gt;
-9             PAINT CREEK ISD      1      95   29940       22333 &lt;NA&gt;
-10          LIBERTY-EYLAU ISD      4    2131   19971       12415 &lt;NA&gt;
-11           GOOSE CREEK CISD     31   23833   14213       12111 &lt;NA&gt;
-12          TULOSO-MIDWAY ISD      6    3745   15313       10669 &lt;NA&gt;
-13         NUECES CANYON CISD      2     254   16804       15142 &lt;NA&gt;
-14               MISSION CISD     23   13838   15204       12062 &lt;NA&gt;
-15                 UNITED ISD     50   39243   12654       11226 &lt;NA&gt;</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: FGt
+           Df  Sum Sq Mean Sq F value   Pr(&gt;F)   
+FGtM1       1   87.20  87.199  1.9008 0.176047   
+Name       18 2252.47 125.137  2.7279 0.004565 **
+FGtM1:Name 18  417.75  23.209  0.5059 0.938592   
+Residuals  38 1743.20  45.874                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">### số 2 là dataset có 2 dòng (hàng) dữ liệu đầy đủ tất cả thông tin (từ cột đầu tiên đến cột type) </span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="do">### ngoại trừ cột expenditure (màu đỏ), lúc này toàn bộ giá trị ở cột expenditure là NA.</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>df_clean_2 <span class="ot">&lt;-</span> df[<span class="fu">complete.cases</span>(df<span class="sc">$</span>name, df<span class="sc">$</span>school, df<span class="sc">$</span>student, df<span class="sc">$</span>revenue, df<span class="sc">$</span>type), ]</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>df_clean_2a <span class="ot">&lt;-</span> df_clean_2[<span class="fu">is.na</span>(df_clean_2<span class="sc">$</span>expenditure), ] </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(df_clean_2a) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df_clean_2a) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">lm</span>(FGt <span class="sc">~</span> Name <span class="sc">+</span> FGtM1,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> kicker)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit<span class="fl">.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2 6</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: FGt
+          Df  Sum Sq Mean Sq F value  Pr(&gt;F)    
+Name      18 1569.68   87.20  2.2599 0.01051 *  
+FGtM1      1  769.99  769.99 19.9538 3.9e-05 ***
+Residuals 56 2160.96   38.59                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_clean_2a</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit<span class="fl">.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                                  name school student revenue expenditure type
-1     EVOLUTION ACADEMY CHARTER SCHOOL      3     669   12607          NA    I
-2 DR M L GARZA-GONZALEZ CHARTER SCHOOL      1     166   14006          NA    I</code></pre>
+<pre><code>
+Call:
+lm(formula = FGt ~ Name + FGtM1, data = kicker)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.1808  -4.0045  -0.5093   4.3053  13.3134 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)              126.6872    10.0057  12.661  &lt; 2e-16 ***
+NameDavid Akers           -4.6463     4.4007  -1.056  0.29559    
+NameJason Elam            -3.0167     4.4217  -0.682  0.49790    
+NameJason Hanson           2.1172     4.3949   0.482  0.63186    
+NameJay Feely            -10.3737     4.4514  -2.330  0.02341 *  
+NameJeff Reed             -8.2955     4.3994  -1.886  0.06454 .  
+NameJeff Wilkins           2.3102     4.3931   0.526  0.60106    
+NameJohn Carney           -5.9774     4.4159  -1.354  0.18130    
+NameJohn Hall             -8.4865     4.4528  -1.906  0.06180 .  
+NameKris Brown           -13.3598     4.5186  -2.957  0.00455 ** 
+NameMatt Stover            8.7363     4.4060   1.983  0.05230 .  
+NameMike Vanderjagt        4.8955     4.3994   1.113  0.27055    
+NameNeil Rackers          -6.6200     4.3985  -1.505  0.13793    
+NameOlindo Mare          -13.0365     4.4528  -2.928  0.00493 ** 
+NamePhil Dawson            3.5524     4.3931   0.809  0.42215    
+NameRian Lindell          -4.8674     4.4244  -1.100  0.27598    
+NameRyan Longwell         -2.2315     4.3970  -0.508  0.61379    
+NameSebastian Janikowski  -3.9763     4.4126  -0.901  0.37138    
+NameShayne Graham          2.1350     4.3932   0.486  0.62888    
+FGtM1                     -0.5037     0.1128  -4.467  3.9e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.212 on 56 degrees of freedom
+Multiple R-squared:  0.5199,    Adjusted R-squared:  0.3569 
+F-statistic: 3.191 on 19 and 56 DF,  p-value: 0.0003849</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">### số 11 là dataset có 11 dòng (hàng) dữ liệu đầy đủ tất cả thông tin (từ cột đầu tiên đến cột revenue) </span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="do">### ngoại trừ cột expenditure và type (màu đỏ), lúc này toàn bộ giá trị ở cột expenditure và type là NA.</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>df_clean_3 <span class="ot">&lt;-</span> df[<span class="fu">complete.cases</span>(df<span class="sc">$</span>name, df<span class="sc">$</span>school, df<span class="sc">$</span>student, df<span class="sc">$</span>revenue), ]</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>df_clean_3a <span class="ot">&lt;-</span> df_clean_3[<span class="fu">is.na</span>(df_clean_3<span class="sc">$</span>type), ] </span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>df_clean_3b <span class="ot">&lt;-</span> df_clean_3a[<span class="fu">is.na</span>(df_clean_3a<span class="sc">$</span>expenditure), ] </span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(df_clean_3b) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df_clean_3b) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 11  6</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">pty =</span> <span class="st">"s"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> kicker<span class="sc">$</span>FGtM1,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">y =</span> kicker<span class="sc">$</span>FGt,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Tương quan của tỷ lệ ghi bàn giữa hai năm liên tiếp"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Tỷ lệ ghi bàn của năm trước"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Tỷ lệ ghi bàn của năm sau"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> col_ok,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># biến x</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">60</span>, <span class="dv">100</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># x nhân với hệ số góc</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>slope.piece <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit<span class="fl">.2</span>)<span class="sc">$</span>coef[<span class="dv">20</span>]<span class="sc">*</span>tt</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co"># lấy Adam Vinatieri làm nền nên là 0</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> tt,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">summary</span>(fit<span class="fl">.2</span>)<span class="sc">$</span>coef[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">0</span> <span class="sc">+</span> slope.piece,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">unique</span>(col_ok)[<span class="dv">1</span>])</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co"># từ David Akers thì có hệ số Name tương ứng</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">19</span>){</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> tt,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">summary</span>(fit<span class="fl">.2</span>)<span class="sc">$</span>coef[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">summary</span>(fit<span class="fl">.2</span>)<span class="sc">$</span>coef[i]<span class="sc">+</span> slope.piece,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">unique</span>(col_ok)[i])  </span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sheather2009_chapter1_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df_clean_3b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                    name school student revenue expenditure type
-1              BRYAN ISD     25   16005   14613          NA &lt;NA&gt;
-2        HALE CENTER ISD      3     597   15541          NA &lt;NA&gt;
-3             LAMESA ISD      1    1602   18810          NA &lt;NA&gt;
-4             MALONE ISD      1     153   17031          NA &lt;NA&gt;
-5             LOMETA ISD      2     317   22798          NA &lt;NA&gt;
-6   HARDIN-JEFFERSON ISD      5    2602   11022          NA &lt;NA&gt;
-7  ROSCOE COLLEGIATE ISD      4    3076   29616          NA &lt;NA&gt;
-8         WESTPHALIA ISD      1     155   14312          NA &lt;NA&gt;
-9           HEMPHILL ISD      3     901   16550          NA &lt;NA&gt;
-10             MOODY ISD      4     687   15586          NA &lt;NA&gt;
-11           PEWITT CISD      3     866   13718          NA &lt;NA&gt;</code></pre>
 </div>
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-sheather2009" class="csl-entry" role="listitem">
+Sheather, Simon J. 2009. <em>A Modern Approach to Regression with <span>R</span></em>. Springer. <a href="https://gattonweb.uky.edu/sheather/book/">https://gattonweb.uky.edu/sheather/book/</a>.
+</div>
+</div>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1018,13 +1102,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="./ky-thuat-reshape-du-lieu.html" class="pagination-link" aria-label="<b>Kỹ thuật reshape dữ liệu</b>">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title"><b>Kỹ thuật reshape dữ liệu</b></span></span>
+      <a href="./xay-dung-mo-hinh-GAM-trong-r.html" class="pagination-link" aria-label="<b>Xây dựng mô hình GAM trong R</b>">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><b>Xây dựng mô hình GAM trong R</b></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="Tài liệu tham khảo">
-        <span class="nav-page-text">Tài liệu tham khảo</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./huong-dan-convert-tu-csv-qua-tsv-trong-r.html" class="pagination-link" aria-label="<b>Hướng dẫn convert từ file <code>csv</code> qua <code>tsv</code> trong R</b>">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn convert từ file <code>csv</code> qua <code>tsv</code> trong R</b></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
