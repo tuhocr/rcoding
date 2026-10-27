@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>21&nbsp; Xây dựng mô hình GAM trong R – Thống kê sinh học: Từ lý thuyết đến ứng dụng</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./sheather2009_chapter1.html" rel="next">
+<link href="./tai-lieu-phan-tich-pca.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c614dc152840027ed1d225942eae4f22.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./co-so-ly-thuyet.html">Cơ sở lý thuyết</a></li><li class="breadcrumb-item"><a href="./xay-dung-mo-hinh-GAM-trong-r.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><b>Xây dựng mô hình GAM trong R</b></span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./"></a><a href="https://thongkesinhhoc.com/">Thống kê sinh học: Từ lý thuyết đến ứng dụng</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./cac-lenh-do-thi-can-ban-su-dung-base-r-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Các lệnh đồ thị căn bản sử dụng Base R Graphics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-ve-do-thi-cot-base-r-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn vẽ đồ thị cột bằng Base R Graphics</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-cach-thay-doi-do-rong-cot-trong-barplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn cách thay đổi độ rộng cột trong barplot</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tinh-huong-base-r-graphics-thuong-gap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title"><b>Tình huống Base R Graphics thường gặp</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-ve-do-thi-nhieu-truc-y.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn vẽ đồ thị nhiều trục Y</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-ve-do-thi-bang-package-lattice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn vẽ đồ thị bằng package <code>lattice</code></b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./so-sanh-cu-phap-ve-do-thi-qua-cac-package-khac-nhau.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><b>So sánh cú pháp vẽ đồ thị trong R qua các package khác nhau</b></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./co-so-ly-thuyet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cơ sở lý thuyết</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tai-lieu-chon-loc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><b>Tài liệu chọn lọc</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./khoang-tin-cay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><b>Khoảng tin cậy là gì?</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-phan-tich-t-test-trong-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn phân tích t-test trong R</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phan-tich-anova-2-yeu-to-trong-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><b>Phân tích ANOVA 2 yếu tố trong R</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./so-sanh-ket-qua-giua-parametric-va-non-parametric-anova.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><b>So sánh kết quả giữa phân tích parametric và non-parametric ANOVA</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phan-tich-ancova-trong-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><b>Phân tích ANCOVA trong R</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cac-lenh-r-thuong-dung-khi-thuc-hien-thong-ke-mo-ta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><b>Các lệnh R thường dùng khi thực hiện thống kê mô tả</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quy-trinh-phan-tich-logistic-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><b>Quy trình phân tích logistic regression</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./khai-niem-bootstrap-qua-vi-du-tinh-trung-binh-mau.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><b>Khái niệm về bootstrap qua ví dụ tính trung bình mẫu</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bo-tri-thi-nghiem-toi-uu-hoa-bang-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><b>Bố trí thí nghiệm tối ưu hóa bằng R</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow-phan-tich-thong-ke-qua-dataset-iris.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><b>Workflow phân tích thống kê qua dataset <code>iris</code> </b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example-partial-least-squares-and-principal-component-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><b>Example for Partial Least Squares and Principal Component Regression</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quy-cach-ghi-ky-hieu-toan-hoc-trong-cong-thuc-xac-suat-thong-ke.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><b>Quy cách ghi ký hiệu toán học trong công thức xác suất thống kê</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tai-lieu-phan-tich-pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><b>Tài liệu phân tích PCA</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./xay-dung-mo-hinh-GAM-trong-r.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><b>Xây dựng mô hình GAM trong R</b></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Xây dựng mô hình hồi quy</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sheather2009_chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><b>Chương 1. Giới thiệu</b></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Kỹ thuật xử lý dữ liệu</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-convert-tu-csv-qua-tsv-trong-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn convert từ file <code>csv</code> qua <code>tsv</code> trong R</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-cach-lam-tron-so-trong-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn cách làm tròn số trong R</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huong-dan-show-all-data-tren-console.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title"><b>Hướng dẫn show all data trên console</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ky-thuat-reshape-du-lieu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title"><b>Kỹ thuật reshape dữ liệu</b></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ky-thuat-kiem-tra-missing-value.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><b>Kỹ thuật kiểm tra missing value <code>NA</code></b></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tài liệu tham khảo</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content column-page-right" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./co-so-ly-thuyet.html">Cơ sở lý thuyết</a></li><li class="breadcrumb-item"><a href="./xay-dung-mo-hinh-GAM-trong-r.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><b>Xây dựng mô hình GAM trong R</b></span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><b>Xây dựng mô hình GAM trong R</b></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-right">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><code>https://m-clark.github.io/generalized-additive-models/</code></p>
+<section id="import-dataset" class="level2" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="import-dataset"><span class="header-section-number">21.1</span> Import dataset</h2>
+<p><strong>Câu hỏi nghiên cứu: Đánh giá ảnh hưởng của các biến <code>Income</code>, <code>Edu</code>, <code>Health</code> đến kết quả học tập <code>Overall</code>.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://raw.githubusercontent.com/m-clark/generalized-additive-models/master/data/pisasci2006.csv</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pisa <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data_raw_1/pisasci2006.csv'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pisa</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    Country Overall Issues Explain Evidence Interest Support Income Health   Edu   HDI
+1                   Albania      NA     NA      NA       NA       NA      NA  0.599  0.886 0.716 0.724
+2                 Argentina     391    395     386      385      567     506  0.678  0.868 0.786 0.773
+3                 Australia     527    535     520      531      465     487  0.826  0.965 0.978 0.920
+4                   Austria     511    505     516      505      507     515  0.835  0.944 0.824 0.866
+5                Azerbaijan     382    353     412      344      612     542  0.566  0.780    NA    NA
+6                   Belgium     510    515     503      516      503     492  0.831  0.935 0.868 0.877
+7                    Brazil     390    398     390      378      592     519  0.637  0.818 0.646 0.695
+8                  Bulgaria     434    427     444      417      523     527  0.663  0.829 0.778 0.753
+9                    Canada     534    532     531      542      469     501  0.840  0.951 0.902 0.897
+10                    Chile     438    444     432      440      591     564  0.673  0.923 0.764 0.780
+11                  ChinaHK     542    528     549      542      536     529  0.853  0.966 0.763 0.857
+12                 Colombia     388    402     379      383      644     546  0.616  0.829 0.624 0.683
+13                  Croatia     493    494     492      490      535     514  0.724  0.878 0.762 0.785
+14           Czech Republic     513    500     527      501      489     485  0.763  0.893 0.927 0.858
+15                  Denmark     496    493     501      489      463     483  0.838  0.914 0.911 0.887
+16                  Estonia     531    516     541      531      502     497  0.739  0.838 0.918 0.829
+17                  Finland     563    555     566      567      448     479  0.827  0.931 0.879 0.878
+18                   France     495    499     481      511      520     507  0.819  0.955 0.850 0.873
+19                  Germany     516    510     519      515      513     518  0.831  0.939 0.929 0.898
+20                   Greece     473    469     476      465      549     533  0.791  0.937 0.861 0.861
+21                  Hungary     504    483     518      497      522     512  0.733  0.842 0.855 0.808
+22                  Iceland     491    494     488      491      466     491  0.832  0.964 0.893 0.895
+23                Indonesia     393    393     395      386      608     521  0.484  0.748 0.535 0.579
+24                  Ireland     508    516     505      506      481     484  0.837  0.932 0.945 0.904
+25                   Israel     454    457     443      460      509     512  0.786  0.952 0.901 0.877
+26                    Italy     475    474     480      467      529     511  0.810  0.963 0.832 0.866
+27                    Japan     531    522     527      544      512     468  0.825  0.986 0.869 0.891
+28                   Jordan     422    409     438      405      609     555  0.552  0.832 0.679 0.678
+29               Kazakhstan      NA     NA      NA       NA       NA      NA  0.635  0.717 0.826 0.721
+30                    Korea     522    519     512      538      486     495     NA     NA    NA    NA
+31          Kyrgyz Republic     322    321     334      288      580     502  0.407  0.735 0.712 0.598
+32                   Latvia     490    489     486      491      504     494  0.711  0.820 0.855 0.793
+33            Liechtenstein     522    522     516      535      504     524  0.941  0.931    NA    NA
+34                Lithuania     488    476     494      487      544     541  0.717  0.813 0.871 0.798
+35               Luxembourg     486    483     483      492      515     522  0.901  0.931 0.764 0.863
+36              Macao-China     511    490     520      512      524     521     NA     NA    NA    NA
+37                   Mexico     410    421     406      402      611     536  0.695  0.880 0.684 0.748
+38               Montenegro     412    401     417      407      561     529  0.647  0.852 0.802 0.762
+39              Netherlands     525    533     522      526      452     447  0.848  0.942 0.903 0.897
+40              New Zealand     530    536     522      537      461     470  0.781  0.943 0.991 0.901
+41                   Norway     487    489     495      473      472     485  0.884  0.948 0.993 0.940
+42                   Panama      NA     NA      NA       NA       NA      NA  0.646  0.872 0.735 0.745
+43                     Peru      NA     NA      NA       NA       NA      NA  0.591  0.832 0.688 0.697
+44                   Poland     498    483     506      494      501     513  0.710  0.872 0.812 0.795
+45                 Portugal     474    486     469      472      571     538  0.765  0.919 0.704 0.791
+46                    Qatar     349    352     356      324      565     520  0.914  0.909 0.655 0.816
+47                  Romania     418    409     426      407      591     540  0.658  0.831 0.792 0.757
+48       Russian Federation     479    463     483      481      541     508  0.691  0.736 0.773 0.733
+49                   Serbia     436    431     441      425      523     520  0.642  0.848 0.770 0.749
+50           Shanghai-China      NA     NA      NA       NA       NA      NA     NA     NA    NA    NA
+51                Singapore      NA     NA      NA       NA       NA      NA  0.876  0.951 0.720 0.843
+52          Slovak Republic     488    475     501      478      522     497  0.734  0.859 0.864 0.817
+53                 Slovenia     519    517     523      516      505     502  0.788  0.916 0.877 0.858
+54                    Spain     488    489     490      485      534     529  0.805  0.950 0.836 0.862
+55                   Sweden     503    499     510      496      454     471  0.836  0.956 0.904 0.898
+56              Switzerland     512    515     508      519      504     510  0.857  0.970 0.856 0.893
+57 Taiwan Province of China     532    509     545      532      533     546     NA     NA    NA    NA
+58                 Thailand     421    413     420      423      642     569  0.603  0.842 0.569 0.661
+59      Trinidad and Tobago      NA     NA      NA       NA       NA      NA  0.769  0.772 0.685 0.741
+60                  Tunisia     386    384     383      382      590     534  0.597  0.846 0.608 0.675
+61                   Turkey     424    427     423      417      540     563  0.679  0.828 0.562 0.681
+62     United Arab Emirates      NA     NA      NA       NA       NA      NA  0.909  0.878 0.686 0.818
+63           United Kingdom     515    514     517      514      464     470  0.833  0.934 0.798 0.853
+64            United States     489    492     486      489      480     490  0.872  0.911 0.930 0.904
+65                  Uruguay     428    429     423      429      567     510  0.658  0.884 0.740 0.755</code></pre>
+</div>
+</div>
+</section>
+<section id="summary-dữ-liệu-cho-các-cột-numeric" class="level2" data-number="21.2">
+<h2 data-number="21.2" class="anchored" data-anchor-id="summary-dữ-liệu-cho-các-cột-numeric"><span class="header-section-number">21.2</span> Summary dữ liệu cho các cột numeric</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># devtools::install_github('m-clark/tidyext')</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyext)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>pisa <span class="sc">|&gt;</span> tidyext<span class="sc">::</span><span class="fu">num_by</span>(<span class="fu">vars</span>(<span class="sc">-</span>Country)) <span class="sc">|&gt;</span> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="hjhvqcjxid" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hjhvqcjxid table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#hjhvqcjxid thead, #hjhvqcjxid tbody, #hjhvqcjxid tfoot, #hjhvqcjxid tr, #hjhvqcjxid td, #hjhvqcjxid th {
+  border-style: none;
+}
+
+#hjhvqcjxid p {
+  margin: 0;
+  padding: 0;
+}
+
+#hjhvqcjxid .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#hjhvqcjxid .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#hjhvqcjxid .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#hjhvqcjxid .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#hjhvqcjxid .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#hjhvqcjxid .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#hjhvqcjxid .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#hjhvqcjxid .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#hjhvqcjxid .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#hjhvqcjxid .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#hjhvqcjxid .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#hjhvqcjxid .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#hjhvqcjxid .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#hjhvqcjxid .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#hjhvqcjxid .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hjhvqcjxid .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#hjhvqcjxid .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#hjhvqcjxid .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#hjhvqcjxid .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hjhvqcjxid .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#hjhvqcjxid .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hjhvqcjxid .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#hjhvqcjxid .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hjhvqcjxid .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hjhvqcjxid .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hjhvqcjxid .gt_left {
+  text-align: left;
+}
+
+#hjhvqcjxid .gt_center {
+  text-align: center;
+}
+
+#hjhvqcjxid .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#hjhvqcjxid .gt_font_normal {
+  font-weight: normal;
+}
+
+#hjhvqcjxid .gt_font_bold {
+  font-weight: bold;
+}
+
+#hjhvqcjxid .gt_font_italic {
+  font-style: italic;
+}
+
+#hjhvqcjxid .gt_super {
+  font-size: 65%;
+}
+
+#hjhvqcjxid .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#hjhvqcjxid .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#hjhvqcjxid .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#hjhvqcjxid .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#hjhvqcjxid .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#hjhvqcjxid .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#hjhvqcjxid .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#hjhvqcjxid .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#hjhvqcjxid div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="Variable" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Variable</th>
+<th id="N" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">N</th>
+<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Mean</th>
+<th id="SD" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">SD</th>
+<th id="Min" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Min</th>
+<th id="Q1" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Q1</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Median</th>
+<th id="Q3" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Q3</th>
+<th id="Max" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Max</th>
+<th id="a%-Missing" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">% Missing</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Overall</td>
+<td class="gt_row gt_right" headers="N">57</td>
+<td class="gt_row gt_right" headers="Mean">473.1</td>
+<td class="gt_row gt_right" headers="SD">54.6</td>
+<td class="gt_row gt_right" headers="Min">322.0</td>
+<td class="gt_row gt_right" headers="Q1">428.0</td>
+<td class="gt_row gt_right" headers="Median">489.0</td>
+<td class="gt_row gt_right" headers="Q3">513.0</td>
+<td class="gt_row gt_right" headers="Max">563.0</td>
+<td class="gt_row gt_right" headers="% Missing">12</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Issues</td>
+<td class="gt_row gt_right" headers="N">57</td>
+<td class="gt_row gt_right" headers="Mean">469.9</td>
+<td class="gt_row gt_right" headers="SD">53.9</td>
+<td class="gt_row gt_right" headers="Min">321.0</td>
+<td class="gt_row gt_right" headers="Q1">427.0</td>
+<td class="gt_row gt_right" headers="Median">489.0</td>
+<td class="gt_row gt_right" headers="Q3">514.0</td>
+<td class="gt_row gt_right" headers="Max">555.0</td>
+<td class="gt_row gt_right" headers="% Missing">12</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Explain</td>
+<td class="gt_row gt_right" headers="N">57</td>
+<td class="gt_row gt_right" headers="Mean">475.0</td>
+<td class="gt_row gt_right" headers="SD">54.0</td>
+<td class="gt_row gt_right" headers="Min">334.0</td>
+<td class="gt_row gt_right" headers="Q1">432.0</td>
+<td class="gt_row gt_right" headers="Median">490.0</td>
+<td class="gt_row gt_right" headers="Q3">517.0</td>
+<td class="gt_row gt_right" headers="Max">566.0</td>
+<td class="gt_row gt_right" headers="% Missing">12</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Evidence</td>
+<td class="gt_row gt_right" headers="N">57</td>
+<td class="gt_row gt_right" headers="Mean">469.8</td>
+<td class="gt_row gt_right" headers="SD">61.7</td>
+<td class="gt_row gt_right" headers="Min">288.0</td>
+<td class="gt_row gt_right" headers="Q1">423.0</td>
+<td class="gt_row gt_right" headers="Median">489.0</td>
+<td class="gt_row gt_right" headers="Q3">515.0</td>
+<td class="gt_row gt_right" headers="Max">567.0</td>
+<td class="gt_row gt_right" headers="% Missing">12</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Interest</td>
+<td class="gt_row gt_right" headers="N">57</td>
+<td class="gt_row gt_right" headers="Mean">528.2</td>
+<td class="gt_row gt_right" headers="SD">49.8</td>
+<td class="gt_row gt_right" headers="Min">448.0</td>
+<td class="gt_row gt_right" headers="Q1">501.0</td>
+<td class="gt_row gt_right" headers="Median">522.0</td>
+<td class="gt_row gt_right" headers="Q3">565.0</td>
+<td class="gt_row gt_right" headers="Max">644.0</td>
+<td class="gt_row gt_right" headers="% Missing">12</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Support</td>
+<td class="gt_row gt_right" headers="N">57</td>
+<td class="gt_row gt_right" headers="Mean">512.2</td>
+<td class="gt_row gt_right" headers="SD">26.1</td>
+<td class="gt_row gt_right" headers="Min">447.0</td>
+<td class="gt_row gt_right" headers="Q1">494.0</td>
+<td class="gt_row gt_right" headers="Median">512.0</td>
+<td class="gt_row gt_right" headers="Q3">529.0</td>
+<td class="gt_row gt_right" headers="Max">569.0</td>
+<td class="gt_row gt_right" headers="% Missing">12</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Income</td>
+<td class="gt_row gt_right" headers="N">61</td>
+<td class="gt_row gt_right" headers="Mean">0.7</td>
+<td class="gt_row gt_right" headers="SD">0.1</td>
+<td class="gt_row gt_right" headers="Min">0.4</td>
+<td class="gt_row gt_right" headers="Q1">0.7</td>
+<td class="gt_row gt_right" headers="Median">0.8</td>
+<td class="gt_row gt_right" headers="Q3">0.8</td>
+<td class="gt_row gt_right" headers="Max">0.9</td>
+<td class="gt_row gt_right" headers="% Missing">6</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Health</td>
+<td class="gt_row gt_right" headers="N">61</td>
+<td class="gt_row gt_right" headers="Mean">0.9</td>
+<td class="gt_row gt_right" headers="SD">0.1</td>
+<td class="gt_row gt_right" headers="Min">0.7</td>
+<td class="gt_row gt_right" headers="Q1">0.8</td>
+<td class="gt_row gt_right" headers="Median">0.9</td>
+<td class="gt_row gt_right" headers="Q3">0.9</td>
+<td class="gt_row gt_right" headers="Max">1.0</td>
+<td class="gt_row gt_right" headers="% Missing">6</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Edu</td>
+<td class="gt_row gt_right" headers="N">59</td>
+<td class="gt_row gt_right" headers="Mean">0.8</td>
+<td class="gt_row gt_right" headers="SD">0.1</td>
+<td class="gt_row gt_right" headers="Min">0.5</td>
+<td class="gt_row gt_right" headers="Q1">0.7</td>
+<td class="gt_row gt_right" headers="Median">0.8</td>
+<td class="gt_row gt_right" headers="Q3">0.9</td>
+<td class="gt_row gt_right" headers="Max">1.0</td>
+<td class="gt_row gt_right" headers="% Missing">9</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">HDI</td>
+<td class="gt_row gt_right" headers="N">59</td>
+<td class="gt_row gt_right" headers="Mean">0.8</td>
+<td class="gt_row gt_right" headers="SD">0.1</td>
+<td class="gt_row gt_right" headers="Min">0.6</td>
+<td class="gt_row gt_right" headers="Q1">0.7</td>
+<td class="gt_row gt_right" headers="Median">0.8</td>
+<td class="gt_row gt_right" headers="Q3">0.9</td>
+<td class="gt_row gt_right" headers="Max">0.9</td>
+<td class="gt_row gt_right" headers="% Missing">9</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="pairs-plot" class="level2" data-number="21.3">
+<h2 data-number="21.3" class="anchored" data-anchor-id="pairs-plot"><span class="header-section-number">21.3</span> Pairs plot</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>better_smooth <span class="ot">&lt;-</span> <span class="cf">function</span>(data, mapping, ptcol, <span class="at">ptalpha=</span><span class="dv">1</span>, <span class="at">ptsize=</span><span class="dv">1</span>, linecol, ...) {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> data, <span class="at">mapping =</span> mapping) <span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> ptcol, <span class="at">alpha=</span>ptalpha, <span class="at">size =</span> ptsize) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">color =</span> linecol, ...)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  p</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  pisa[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>)],</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">list</span>(</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">continuous =</span> GGally<span class="sc">::</span><span class="fu">wrap</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      better_smooth,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">ptalpha =</span> .<span class="dv">25</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">ptcol =</span> <span class="st">'#D55E00'</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">ptsize =</span> <span class="dv">1</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">linecol =</span> <span class="st">'#03b3ff'</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">'loess'</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">se =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">lwd =</span> .<span class="dv">5</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">diag =</span> <span class="fu">list</span>(<span class="at">continuous =</span> GGally<span class="sc">::</span><span class="fu">wrap</span>(</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'densityDiag'</span>, <span class="at">color =</span> <span class="st">'gray50'</span>, <span class="at">lwd =</span> .<span class="dv">5</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  )),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># upper=list(continuous=GGally::wrap(better_corr)),</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">axisLabels =</span> <span class="st">"none"</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fitting-model-gam" class="level2" data-number="21.4">
+<h2 data-number="21.4" class="anchored" data-anchor-id="fitting-model-gam"><span class="header-section-number">21.4</span> Fitting model GAM</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gamRR)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>mod_gam2 <span class="ot">=</span> <span class="fu">gam</span>(Overall <span class="sc">~</span> <span class="fu">s</span>(Income) <span class="sc">+</span> <span class="fu">s</span>(Edu) <span class="sc">+</span> <span class="fu">s</span>(Health), <span class="at">data =</span> pisa)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_gam2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: gaussian 
+Link function: identity 
+
+Formula:
+Overall ~ s(Income) + s(Edu) + s(Health)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  471.154      2.772     170   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Approximate significance of smooth terms:
+            edf Ref.df     F  p-value    
+s(Income) 7.593  8.415 8.826 1.29e-06 ***
+s(Edu)    6.204  7.178 3.308  0.00771 ** 
+s(Health) 1.000  1.000 2.736  0.10679    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+R-sq.(adj) =  0.863   Deviance explained = 90.3%
+GCV = 573.83  Scale est. = 399.5     n = 52</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_gam2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="thể-hiện-ảnh-hưởng-của-từng-biến-x-đầu-vào-lên-biến-y-đầu-ra" class="level2" data-number="21.5">
+<h2 data-number="21.5" class="anchored" data-anchor-id="thể-hiện-ảnh-hưởng-của-từng-biến-x-đầu-vào-lên-biến-y-đầu-ra"><span class="header-section-number">21.5</span> Thể hiện ảnh hưởng của từng biến <code>x</code> đầu vào lên biến <code>y</code> đầu ra</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gratia)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ggeffects<span class="sc">::</span><span class="fu">ggpredict</span>(mod_gam2), <span class="at">facets =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>gratia<span class="sc">::</span><span class="fu">draw</span>(mod_gam2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cách-tính-relative-risk-trong-model-gam" class="level2" data-number="21.6">
+<h2 data-number="21.6" class="anchored" data-anchor-id="cách-tính-relative-risk-trong-model-gam"><span class="header-section-number">21.6</span> Cách tính relative risk trong model GAM</h2>
+<p>Code này tham khảo theo package <code>gamRR</code>. Khi phân tích source code ta thấy relative risk được tính như sau:</p>
+<p>1/ Từ model GAM đã fitting ở trên <code>mod_gam2</code></p>
+<p>2/ Ta chọn 1 vector tham chiếu, ở đây ví dụ là <code>ref = c(Income = pisa$Income[1], Edu = pisa$Edu[1], Health = pisa$Health[1])</code> nghĩa là ngay dòng đầu tiên của dataset. Vai trò của vector tham chiếu này (1 điểm data point) là giúp làm mẫu số cho công thức tính relative risk.</p>
+<p>3/ Ta chọn 1 biến <code>x</code> để kiểm tra relative risk, như trong trường hợp này là biến <code>Income</code>.</p>
+<p>4/ Khi đó ta tạo dataframe với cột <code>Income</code> sẽ thay đổi theo dataset ban đầu nhưng hai cột <code>Edu</code> và <code>Health</code> sẽ không đổi (chính là điểm datapoint tham chiếu ở bước 2)</p>
+<p>5/ Thực hiện predict để tìm giá trị <code>y predict</code> cho điểm tham chiếu (ở bước 2).</p>
+<p>6/ Thực hiện predict để tìm <strong>các</strong> giá trị <code>y predict</code> cho dataframe (ở bước 4)</p>
+<p>7/ Relative risk là tỷ số giữa các giá trị <code>y predict</code> cho dataframe (ở bước 4) chia cho giá trị <code>y predict</code> (ở bước 2), trong trường hợp này là relative risk của biến <code>Income</code>.</p>
+<p>Toàn bộ quy trình này được thể hiện qua đồ thị như bên dưới. Lưu ý là các thông tin sau chỉ là nhận định của cá nhân mình, để hiểu rõ thuật toán bạn sẽ liên hệ với tác giả package theo thông tin sau.</p>
+<p><code>https://cran.r-project.org/web/packages/gamRR/index.html</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>gamRR<span class="sc">::</span>gamRR <span class="ot">&lt;-</span> <span class="cf">function</span> (fit, ref, est, data, <span class="at">n.points =</span> <span class="dv">10</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>, <span class="at">ylim =</span> <span class="cn">NULL</span>) </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  ref <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">t</span>(ref))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  form <span class="ot">=</span> <span class="fu">as.character</span>(fit<span class="sc">$</span>formula)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">strsplit</span>(form[<span class="dv">3</span>], <span class="st">"</span><span class="sc">\\</span><span class="st">+"</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">" "</span>, <span class="st">""</span>, x.list)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(x.list, <span class="st">"</span><span class="sc">\\</span><span class="st">,"</span>), <span class="st">"["</span>, <span class="dv">1</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"s</span><span class="sc">\\</span><span class="st">("</span>, <span class="st">""</span>, x.list)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"as.factor</span><span class="sc">\\</span><span class="st">("</span>, <span class="st">""</span>, x.list)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"factor</span><span class="sc">\\</span><span class="st">("</span>, <span class="st">""</span>, x.list)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"offset</span><span class="sc">\\</span><span class="st">("</span>, <span class="st">""</span>, x.list)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"log</span><span class="sc">\\</span><span class="st">("</span>, <span class="st">""</span>, x.list)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  x.list <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">)"</span>, <span class="st">""</span>, x.list)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">names</span>(ref)) <span class="sc">!=</span> <span class="fu">length</span>(x.list)) {</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"The number of variables in the 'ref' argument is not equal to those in the model!"</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(<span class="sc">!</span>(<span class="fu">names</span>(ref) <span class="sc">%in%</span> x.list))) {</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Some variables in the 'ref' argument are not in the model!"</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(x.list)) {</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    data <span class="ot">=</span> data[<span class="sc">!</span><span class="fu">is.na</span>(data[, x.list[i]]), ]</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  rrref <span class="ot">=</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">"response"</span>, <span class="at">newdata =</span> ref)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  ndata <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">names</span>(ref))), <span class="at">ncol =</span> <span class="fu">length</span>(<span class="fu">names</span>(ref)))</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  ndata <span class="ot">=</span> <span class="fu">data.frame</span>(ndata)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(ndata) <span class="ot">=</span> <span class="fu">names</span>(ref)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1 biến chạy, giữ nguyên các biến còn lại</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  ndata[, <span class="fu">match</span>(est, <span class="fu">names</span>(ndata))] <span class="ot">=</span> data[, <span class="fu">match</span>(est, <span class="fu">names</span>(data))]</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  ndata[, <span class="sc">-</span><span class="fu">match</span>(est, <span class="fu">names</span>(ref))] <span class="ot">=</span> ref[, <span class="sc">-</span><span class="fu">match</span>(est, <span class="fu">names</span>(ref))]</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  rr <span class="ot">=</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">"response"</span>, <span class="at">newdata =</span> ndata)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># relative risk là kết quả y đầu ra (tiên lượng với 1 biến x chạy, và các biến kia giữ nguyên) chia cho điểm tham chiếu</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  rr <span class="ot">=</span> <span class="fu">as.numeric</span>(rr)<span class="sc">/</span><span class="fu">as.numeric</span>(rrref)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  ref_no_est <span class="ot">=</span> <span class="fu">names</span>(ref)[<span class="sc">-</span><span class="fu">match</span>(est, <span class="fu">names</span>(ref))]</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  ndata <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">names</span>(ref))), <span class="at">ncol =</span> <span class="fu">length</span>(<span class="fu">names</span>(ref)))</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>  ndata <span class="ot">=</span> <span class="fu">data.frame</span>(ndata)</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(ndata) <span class="ot">=</span> <span class="fu">names</span>(ref)</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>  ndata[, <span class="fu">match</span>(est, <span class="fu">names</span>(ndata))] <span class="ot">=</span> data[, <span class="fu">match</span>(est, <span class="fu">names</span>(data))]</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ref_no_est)) {</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    ndata[, ref_no_est[j]] <span class="ot">=</span> data[i, ref_no_est[j]]</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>  rrn <span class="ot">=</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">"response"</span>, <span class="at">newdata =</span> ndata)<span class="sc">/</span><span class="fu">as.numeric</span>(rrref)</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">nrow</span>(data)) {</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    ndata <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">names</span>(ref))), </span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol =</span> <span class="fu">length</span>(<span class="fu">names</span>(ref)))</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    ndata <span class="ot">=</span> <span class="fu">data.frame</span>(ndata)</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(ndata) <span class="ot">=</span> <span class="fu">names</span>(ref)</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    ndata[, <span class="fu">match</span>(est, <span class="fu">names</span>(ndata))] <span class="ot">=</span> data[, <span class="fu">match</span>(est, </span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>                                                     <span class="fu">names</span>(data))]</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ref_no_est)) {</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>      ndata[, ref_no_est[j]] <span class="ot">=</span> data[i, ref_no_est[j]]</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    rrn <span class="ot">=</span> <span class="fu">cbind</span>(rrn, <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">"response"</span>, <span class="at">newdata =</span> ndata)<span class="sc">/</span><span class="fu">as.numeric</span>(rrref))</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>  se <span class="ot">=</span> <span class="fu">apply</span>(rrn, <span class="dv">1</span>, <span class="at">FUN =</span> <span class="st">"sd"</span>)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">nrow</span>(data) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">=</span> rr <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> se</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>  l <span class="ot">=</span> rr <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> se</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>  xy <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> data[, est], <span class="at">rr =</span> rr, <span class="at">u =</span> u, <span class="at">l =</span> l)</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>  xy <span class="ot">=</span> xy[<span class="fu">order</span>(xy<span class="sc">$</span>x), ]</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>  rangE <span class="ot">=</span> <span class="fu">range</span>(data[, est])</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>  est.seq <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from =</span> rangE[<span class="dv">1</span>], <span class="at">to =</span> rangE[<span class="dv">2</span>], <span class="at">length.out =</span> n.points)</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>  seq.ind <span class="ot">=</span> <span class="fu">which</span>(<span class="fu">abs</span>(est.seq <span class="sc">-</span> <span class="fu">as.numeric</span>(ref[est])) <span class="sc">==</span> <span class="fu">min</span>(<span class="fu">abs</span>(est.seq <span class="sc">-</span> </span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>                                                                   <span class="fu">as.numeric</span>(ref[est]))))</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>  est.seq[seq.ind] <span class="ot">=</span> <span class="fu">as.numeric</span>(ref[est])</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>  nxy <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>, n.points <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>  nxy <span class="ot">=</span> <span class="fu">data.frame</span>(nxy)</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(nxy) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"rr"</span>, <span class="st">"u"</span>, <span class="st">"l"</span>)</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.points) {</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>    ind <span class="ot">=</span> <span class="fu">which</span>(<span class="fu">abs</span>(xy<span class="sc">$</span>x <span class="sc">-</span> est.seq[i]) <span class="sc">==</span> <span class="fu">min</span>(<span class="fu">abs</span>(xy<span class="sc">$</span>x <span class="sc">-</span> </span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>                                                    est.seq[i])))</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>    nxy[i, ] <span class="ot">=</span> xy[ind, ]</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>  nxy[seq.ind, <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>] <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (plot) {</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.null</span>(ylim)) {</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>      ylim <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">min</span>(xy<span class="sc">$</span>l), <span class="fu">max</span>(xy<span class="sc">$</span>u))</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(<span class="fu">spline</span>(nxy<span class="sc">$</span>x, nxy<span class="sc">$</span>rr, <span class="at">xmax =</span> <span class="fu">as.numeric</span>(ref[, est])), </span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fu">min</span>(nxy<span class="sc">$</span>x), <span class="fu">max</span>(nxy<span class="sc">$</span>x)), <span class="at">ylim =</span> ylim, </span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab =</span> est, <span class="at">ylab =</span> <span class="st">"RR"</span>)</span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="fu">spline</span>(nxy<span class="sc">$</span>x, nxy<span class="sc">$</span>l, <span class="at">xmax =</span> <span class="fu">as.numeric</span>(ref[, est])), </span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>          <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="fu">spline</span>(nxy<span class="sc">$</span>x, nxy<span class="sc">$</span>u, <span class="at">xmax =</span> <span class="fu">as.numeric</span>(ref[, est])), </span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>          <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="fu">spline</span>(nxy<span class="sc">$</span>x, nxy<span class="sc">$</span>rr, <span class="at">xmin =</span> <span class="fu">as.numeric</span>(ref[, est])), </span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>          <span class="at">lty =</span> <span class="dv">1</span>)</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="fu">spline</span>(nxy<span class="sc">$</span>x, nxy<span class="sc">$</span>l, <span class="at">xmin =</span> <span class="fu">as.numeric</span>(ref[, est])), </span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>          <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="fu">spline</span>(nxy<span class="sc">$</span>x, nxy<span class="sc">$</span>u, <span class="at">xmin =</span> <span class="fu">as.numeric</span>(ref[, est])), </span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>          <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(nxy)</span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gamRR<span class="sc">::</span><span class="fu">gamRR</span>(<span class="at">fit =</span> mod_gam2,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">ref =</span> <span class="fu">c</span>(<span class="at">Income =</span> pisa<span class="sc">$</span>Income[<span class="dv">1</span>],</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Edu =</span> pisa<span class="sc">$</span>Edu[<span class="dv">1</span>],</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Health =</span> pisa<span class="sc">$</span>Health[<span class="dv">1</span>]),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">est =</span> <span class="st">"Income"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> pisa,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">n.points =</span> <span class="dv">10</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">ylim =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       x        rr         u         l
+1  0.407 0.6838944 0.6944088 0.6733801
+2  0.484 0.8713265 0.8818409 0.8608122
+3  0.552 0.9970502 1.0075646 0.9865359
+4  0.599 1.0000000 1.0000000 1.0000000
+5  0.635 0.9529522 0.9634665 0.9424379
+6  0.691 1.0115245 1.0220389 1.0010102
+7  0.739 1.1412184 1.1517328 1.1307041
+8  0.805 1.1676452 1.1781595 1.1571308
+9  0.857 1.1974125 1.2079269 1.1868982
+10 0.914 0.9669727 0.9774871 0.9564584</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gamRR<span class="sc">::</span><span class="fu">gamRR</span>(<span class="at">fit =</span> mod_gam2,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">ref =</span> <span class="fu">c</span>(<span class="at">Income =</span> pisa<span class="sc">$</span>Income[<span class="dv">1</span>],</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Edu =</span> pisa<span class="sc">$</span>Edu[<span class="dv">1</span>],</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Health =</span> pisa<span class="sc">$</span>Health[<span class="dv">1</span>]),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">est =</span> <span class="st">"Edu"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> pisa,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">n.points =</span> <span class="dv">10</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">ylim =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       x        rr         u         l
+1  0.535 0.9878204 1.0124750 0.9631658
+2  0.569 0.9450332 0.9696878 0.9203786
+3  0.646 0.8924675 0.9171221 0.8678129
+4  0.688 0.9458709 0.9705255 0.9212163
+5  0.716 1.0000000 1.0000000 1.0000000
+6  0.792 1.0169171 1.0415717 0.9922625
+7  0.836 1.0009779 1.0256325 0.9763233
+8  0.893 1.0115830 1.0362376 0.9869284
+9  0.945 1.0165534 1.0412080 0.9918988
+10 0.993 1.0657664 1.0904210 1.0411118</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gamRR<span class="sc">::</span><span class="fu">gamRR</span>(<span class="at">fit =</span> mod_gam2,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">ref =</span> <span class="fu">c</span>(<span class="at">Income =</span> pisa<span class="sc">$</span>Income[<span class="dv">1</span>],</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Edu =</span> pisa<span class="sc">$</span>Edu[<span class="dv">1</span>],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Health =</span> pisa<span class="sc">$</span>Health[<span class="dv">1</span>]),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">est =</span> <span class="st">"Health"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> pisa,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">n.points =</span> <span class="dv">10</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">ylim =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="xay-dung-mo-hinh-GAM-trong-r_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       x        rr         u         l
+1  0.717 1.0740251 1.1081999 1.0398504
+2  0.748 1.0604466 1.0946213 1.0262718
+3  0.772 1.0499341 1.0841089 1.0157594
+4  0.813 1.0319754 1.0661501 0.9978006
+5  0.838 1.0210249 1.0551996 0.9868501
+6  0.868 1.0078843 1.0420591 0.9737096
+7  0.886 1.0000000 1.0000000 1.0000000
+8  0.923 0.9837933 1.0179681 0.9496186
+9  0.956 0.9693387 1.0035135 0.9351640
+10 0.986 0.9561981 0.9903729 0.9220234</code></pre>
+</div>
+</div>
+</section>
+<section id="tài-liệu-tham-khảo" class="level1" data-number="22">
+<h1 data-number="22"><span class="header-section-number">22</span> Tài liệu tham khảo</h1>
+<ol type="1">
+<li><p><a href="https://rpubs.com/HeatWave2019/572700" class="uri">https://rpubs.com/HeatWave2019/572700</a></p></li>
+<li><p><a href="https://rpubs.com/Huyen_Nguyen_Rosie/1055522" class="uri">https://rpubs.com/Huyen_Nguyen_Rosie/1055522</a></p></li>
+<li><p><a href="https://stat.ethz.ch/pipermail/r-help/2003-May/033804.html" class="uri">https://stat.ethz.ch/pipermail/r-help/2003-May/033804.html</a></p></li>
+<li><p><a href="https://stats.stackexchange.com/questions/33327/confidence-interval-for-gam-model" class="uri">https://stats.stackexchange.com/questions/33327/confidence-interval-for-gam-model</a></p></li>
+<li><p><a href="https://www.researchgate.net/post/How_can_I_calculate_the_confidence_Interval_of_the_relative_risk_when_using_the_GAM_model_and_the_R_language_My_modelgam_DeathsHeat_Cold_sTM" class="uri">https://www.researchgate.net/post/How_can_I_calculate_the_confidence_Interval_of_the_relative_risk_when_using_the_GAM_model_and_the_R_language_My_modelgam_DeathsHeat_Cold_sTM</a></p></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/www\.tuhocr\.com\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation column-page-right">
+  <div class="nav-page nav-page-previous">
+      <a href="./tai-lieu-phan-tich-pca.html" class="pagination-link" aria-label="<b>Tài liệu phân tích PCA</b>">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><b>Tài liệu phân tích PCA</b></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./sheather2009_chapter1.html" class="pagination-link" aria-label="<b>Chương 1. Giới thiệu</b>">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><b>Chương 1. Giới thiệu</b></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
